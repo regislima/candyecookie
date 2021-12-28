@@ -1,0 +1,140 @@
+<!-- Detalhes model -->
+<div class="col-sm-6 mx-auto">
+    <div class="card card-profile">
+        <div class="card-avatar">
+            <a href="" data-toggle="modal" data-target="#modalImagem">
+                {% if model.getImagem() %}
+                    <img class="img" src="App/Resources/Images/{{model.getImagem()[0].getImagem()}}">
+                {% else %}
+                    <img class="img" src="App/Resources/Images/produto_sem_imagem.png">
+                {% endif %}
+            </a>
+        </div>
+        <div class="card-body">
+            <div class="card-header card-header-primary">
+                <h2>{{model.getNome()}}</h2>
+                <h5>{{model.getTipo()}}</h5>
+            </div>
+            <p class="card-description">
+                <p>
+                    <div class="row">
+                        <div class="col text-right">
+                            <h5>Código</h5>
+                        </div>
+                        <div class="col text-left">
+                            <h5>{{model.getId()}}</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col text-right">
+                            <h5>Estoque</h5>
+                        </div>
+                        <div class="col text-left">
+                            <h5>{{model.getEstoque()}}</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col text-right">
+                            <h5>Preço de Custo</h5>
+                        </div>
+                        <div class="col text-left">
+                            <h5>R$ {{model.getPreco_Custo()}}</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col text-right">
+                            <h5>Preço de Venda</h5>
+                        </div>
+                        <div class="col text-left">
+                            <h5>R$ {{model.getPreco_Venda()}}</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col text-right">
+                            <h5>Medida</h5>
+                        </div>
+                        <div class="col text-left">
+                            <h5>{{model.getMedida()}} {{model.getUnidade()}}</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col text-right">
+                            <h5>Fabricante</h5>
+                        </div>
+                        <div class="col text-left">
+                            <h5>{{model.getFabricante()}}</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col text-right">
+                            <h5>Descrição</h5>
+                        </div>
+                        <div class="col text-left">
+                            <h5>{{model.getDescricao()}}</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col text-right">
+                            <h5>Obs</h5>
+                        </div>
+                        <div class="col text-left">
+                            <h5>{{model.getObs()}}</h5>
+                        </div>
+                    </div>
+                </p>
+            </p>
+            <button type="button" onclick="history.go(-1);" class="btn btn-primary btn-round">Voltar</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalImagem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">{{model.getImagem()[0].getImagem()}}</h5>
+        </div>
+        <div class="modal-body text-center">
+            <div id="slider" class="carousel slide my-4" data-ride="carousel">
+                <ol class="carousel-indicators">
+                  
+                    {% for key in model.getImagem() | keys %}
+                        {% if key == 0 %}
+                            <li data-target="#slider" data-slide-to="{{ key }}" class="active"></li>
+                        {% else %}
+                            <li data-target="#slider" data-slide-to="{{ key }}"></li>
+                        {% endif %}
+                    {% endfor %}
+
+                </ol>
+                <div class="carousel-inner" role="listbox">
+
+                    {% for key, imagens in model.getImagem() %}
+                        {% if key == 0 %}
+                            <div class="carousel-item active">
+                                <img class="img-fluid" src="App/Resources/Images/{{ imagens.getImagem() }}" alt="slide">
+                            </div>
+                        {% else %}
+                            <div class="carousel-item">
+                                <img class="img-fluid" src="App/Resources/Images/{{ imagens.getImagem() }}" alt="slide">
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+
+                </div>
+                <a class="carousel-control-prev" href="#slider" role="button" data-slide="prev">
+                    <i class="fas fa-chevron-left text-dark" aria-hidden="true"></i>
+                    <span class="sr-only">Anterior</span>
+                </a>
+                <a class="carousel-control-next" href="#slider" role="button" data-slide="next">
+                    <i class="fas fa-chevron-right text-dark" aria-hidden="true"></i>
+                    <span class="sr-only">Próximo</span>
+                </a>
+            </div>
+        </div>
+        <div class="modal-footer text-center">
+            <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>

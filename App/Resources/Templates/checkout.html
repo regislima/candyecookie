@@ -1,0 +1,245 @@
+<link rel="stylesheet" href="App/Resources/assets/css/checkout.css">
+
+{% if produtos and pessoa %}
+    <div class="py-5 text-center">
+        <img class="d-block mx-auto mb-4" src="/docs/4.5/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
+        <h2>Verificação</h2>
+        <p class="lead">Verifique suas informações. Caso deseje alterar, clique no botão alterar. Se tudo estiver correto, clique em Finalizar.</p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 order-md-2 mb-4">
+            <h4 class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-muted">Seu Carrinho</span>
+                <span class="badge badge-secondary badge-pill">{{ produtos | length }}</span>
+            </h4>
+            <ul class="list-group mb-3">
+                {% for produto in produtos %}
+                    <li class="list-group-item d-flex justify-content-between lh-condensed">
+                        <div>
+                            <h6 class="my-0">{{ produto.nome }}</h6>
+                            <small class="text-muted">Quantidade: {{ produto.quantidade }}</small>
+                        </div>
+                        <span class="text-muted"> R$ {{ produto.preco_venda | number_format(2, ',', '.') }}</span>
+                    </li>
+                {% endfor %}
+
+                <li class="list-group-item d-flex justify-content-between bg-light">
+                    <div>
+                        <h6 class="my-0">Adicionais</h6>
+                        <small>FRETE + TAXAS</small>
+                    </div>
+                    <span class="text-muted">R$ {{ (valores.frete + valores.taxa) | number_format(2, ',', '.') }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                    <h6 class="my-0">TOTAL</h6>
+                    <strong>R$ {{ valores.total | number_format(2, ',', '.') }}</strong>
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-8 order-md-1">
+            <h4 class="mb-3">Informações</h4>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label>Nome: {{pessoa.getNome()}}</label>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="">CPF: {{pessoa.getCPF()}}</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label>Endereço: {{pessoa.getEndereco()}}</label>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="">Bairro: {{pessoa.getBairro()}}</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label>Telefone: {{pessoa.getTelefone()}}</label>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="">Email: {{pessoa.getEmail()}}</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label>Data de Nascimento: {{pessoa.getNascimento()}}</label>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="">Cidade: {{pessoa.getCidade().getNome()}}</label>
+                </div>
+            </div>
+            <a href="index.php?class=RegisterForm&method=onEdit&id={{pessoa.getId()}}&redirect=Checkout" class="btn btn-primary" id="alterar">Editar</a>
+            <hr class="mb-4">
+
+            <!--Adicionais-->
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="presente" value="1">
+                <label class="custom-control-label" for="presente">Presente?</label>
+            </div>
+            <hr class="mb-4">
+            
+            <!--Pagamento-->
+            <h4 class="mb-3">Pagamento</h4>
+            <div class="card ">
+                <div class="card-header">
+                    <div class="bg-white shadow-sm pt-4 pl-2 pr-2 pb-2">
+                        
+                        <!-- Formas de Pagamento -->
+                        <ul role="tablist" class="nav bg-light nav-pills rounded nav-fill mb-3">
+                            <li class="nav-item">
+                                <a data-toggle="pill" href="#credit-card" class="nav-link">
+                                    <i class="fas fa-credit-card mr-2"></i>
+                                    Cartão de Crédito
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a data-toggle="pill" href="#boleto" class="nav-link ">
+                                    <i class="fas fa-file-invoice mr-2"></i>
+                                    Boleto
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a data-toggle="pill" href="#credito" class="nav-link ">
+                                    <i class="fas fa-donate mr-2"></i>
+                                    Créditos
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- Fim -->
+                    
+                    <!-- Form Cartão de Crédito -->
+                    <div class="tab-content">
+                        
+                        <!-- Cartão de Crédito info-->
+                        <div id="credit-card" class="tab-pane fade show pt-3">
+                            <form role="form">
+                                <div class="form-group">
+                                    <label for="username">
+                                        <h6>Proprietário do Cartão</h6>
+                                    </label>
+                                    <input type="text" name="username" id="username" placeholder="Nome do Proprietário do Cartão" required class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="cardNumber">
+                                        <h6>Número do Cartão</h6>
+                                    </label>
+                                    <div class="input-group">
+                                        <input type="text" name="cardnumber" id="cardnumber" placeholder="Número do Cartão Válido" class="form-control" required>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text text-muted">
+                                                <i class="fab fa-cc-visa mx-1"></i>
+                                                <i class="fab fa-cc-mastercard mx-1"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label>
+                                                <span class="hidden-xs">
+                                                    <h6>Data de Validade</h6>
+                                                </span>
+                                            </label>
+                                            <div class="input-group">
+                                                <input type="number" placeholder="MM" name="cardmonth" id="cardmonth" class="form-control" required>
+                                                <input type="number" placeholder="YY" name="cardyear" id="cardyear" class="form-control" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group mb-4">
+                                            <label data-toggle="tooltip" title="Número de 3 dígitos no verso do cartão">
+                                                <h6>CVV <i class="fa fa-question-circle d-inline"></i></h6>
+                                            </label>
+                                            <input type="text" required class="form-control" name="cvv" id="cvv">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <label>
+                                            <h6>Parcelas</h6>
+                                        </label>
+                                        <select class="form-control" id="parcelas_cartao" name="parcelas_cartao">
+                                            <option value="1">1x de R$ {{ valores.total | number_format(2, ',', '.') }}</option>
+                                            <option value="2">2x de R$ {{ (valores.total / 2) | number_format(2, ',', '.') }}</option>
+                                            <option value="3">3x de R$ {{ (valores.total / 3) | number_format(2, ',', '.') }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <button type="button" class="subscribe btn btn-success btn-block btn-lg shadow-sm" onclick="onRegistraVendaCartao();">Confirmar Pagamento com Cartão de Crédito</button>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- Fim -->
+                    
+                    <!-- Boleto Info -->
+                    <div id="boleto" class="tab-pane fade pt-3">
+                        <h6 class="pb-2">Valor: 1x de R$ {{ valores.total | number_format(2, ',', '.') }}</h6>
+                        <p class="text-muted">Após a confirmação do pagamento, o produto será enviado. Boleto gerado com prazo de 3 dias, após o vencimento, a compra será cancelada.</p>
+                        <div class="form-group">
+                            <p>
+                                <button type="button" class="subscribe btn btn-success btn-block btn-lg shadow-sm" onclick="onRegistraVendaBoleto();">Confirmar Pagamento com Boleto</button>
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Fim -->
+    
+                    <!-- Créditos Info -->
+                    <div id="credito" class="tab-pane fade pt-3">
+                        
+                        {% if pessoa.getCredito() > 0 %}
+                            <div class="form-group">
+                                <label>
+                                    <h6>Total de Créditos: R$ {{ pessoa.getCredito() | number_format(2, ',', '.') }}</h6>
+                                    <h6>Créditos Restantes: R$ {{ restante | number_format(2, ',', '.') }}</h6>
+                                </label>
+                            </div>
+                            {% if restante >= valores.total %}
+                                <div class="form-group">
+                                    <label>
+                                        <h6>Parcelas</h6>
+                                    </label>
+                                    <select class="form-control" id="parcelas_creditos" name="parcelas_creditos">
+                                        <option value="1">1x de R$ {{ valores.total | number_format(2, ',', '.') }}</option>
+                                        <option value="2">2x de R$ {{ (valores.total / 2) | number_format(2, ',', '.') }}</option>
+                                        <option value="3">3x de R$ {{ (valores.total / 3) | number_format(2, ',', '.') }}</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <p>
+                                        <button type="button" class="subscribe btn btn-success btn-block btn-lg shadow-sm" onclick="onRegistraVendaCredito();">Confirmar Pagamento com Créditos</button>
+                                    </p>
+                                </div>
+                            {% else %}
+                                <p class="text-muted">
+                                    Você não possui créditos suficientes para realizar essa compra. Para solicitar créditos, envie-nos uma solicitação <a href="?class=UserDashboard">aqui</a>
+                                </p>
+                            {% endif %}
+                        {% else %}
+                            <p class="text-muted">
+                                Você não possui créditos suficientes para realizar essa compra. Para solicitar créditos, envie-nos uma solicitação <a href="?class=UserDashboard">aqui</a>
+                            </p>
+                        {% endif %}
+                    </div>
+                    <!-- Fim -->
+                </div>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <div class="py-5 text-center">
+        <img class="d-block mx-auto mb-4" src="/docs/4.5/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
+        <h2>Verificação</h2>
+        <p class="lead">Nada por aqui.</p>
+    </div>
+{% endif %}
+
+<!--loading-->
+<div class="modal"></div>
+
+<script src="App/Resources/assets/js/checkout.js"></script>

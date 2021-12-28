@@ -1,0 +1,35 @@
+<li class="nav-item">
+    <a class="nav-link" href="index.php?class=RegisterForm">Registrar</a>
+</li>
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Login
+    </a>
+    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink" style="padding: 15px; min-width: 250px;">
+        
+        <!--Formulário de autenticação-->
+        <form action="index.php?class=LoginForm&method=autentication" method="POST">
+            <div class="form-group">
+                <label class="sr-only" for="user">Email ou CPF</label>
+                <input type="text" class="form-control" id="user" name="user" placeholder="Email ou CPF" required>
+            </div>
+            <div class="form-group">
+                <label class="sr-only" for="senha">Senha</label>
+                <input type="password" class="form-control" id="senha" name="senha" placeholder="Senha" required>
+            </div>
+            <div class="form-group">
+                <div class="form-check">
+                    <input type="checkbox" name="lembrar" id="lembrar" class="form-check-input">
+                    <label for="lembrar" class="form-check-label">Lembrar</label>
+                </div>
+            </div>
+            <button type="submit" id="index_login" class="btn btn-success btn-block">Entrar</button>
+        </form>
+
+        <!--Botão Sociais-->
+        <div class="dropdown-divider"></div>
+        <!--Botões de Rodapé-->
+        <button type="button" class="btn btn-danger btn-block">Entrar com Google</button>
+        <button type="button" class="btn btn-primary btn-block">Entrar com Facebook</button>
+    </div>
+</li>

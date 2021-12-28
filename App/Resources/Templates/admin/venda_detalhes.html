@@ -1,0 +1,271 @@
+<div class="col-sm-12 printable">
+    <div class="row">
+        <div class="col-md-4 col-lg-4">
+            <h2>Fatura #{{ model.getId() }}</h2>
+        </div>
+        <div class="col-md-8 col-lg-8 text-right noprintable">
+            <a href="">
+                <i class="fas fa-print fa-2x"></i>
+            </a>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-sm-12 col-md-3 col-lg-3">
+            <div class="card height">
+                <div class="card-header card-header-primary">Detalhes da Cobrança</div>
+                <div class="card-body">
+                    <a href="index.php?class=PessoaDetails&method=onDetail&id={{ model.getCliente().getId() }}" style="color: black;">
+                        <strong>{{ model.getCliente() }}:</strong><br>
+                    </a>
+                    {{ model.getCliente().getEndereco() }}<br>
+                    {{ model.getCliente().getBairro() }}<br>
+                    {{ model.getCliente().getCidade() }}<br>
+                    <strong>{{ model.getCliente().getTelefone() }}</strong><br>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-3 col-lg-3">
+            <div class="card height">
+                <div class="card-header card-header-primary">Detalhes do Pagamento</div>
+                <div class="card-body">
+                    <strong>Tipo:</strong> {{ model.getFormaPagamento().getForma() }}<br>
+                    <strong>Parcelas:</strong> {{ model.getParcelas() }}<br>
+                    <strong>Valor da Parcela:</strong> R$ {{ (model.getValor_Final() / model.getParcelas()) | number_format(2, ',', '.') }}<br>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-3 col-lg-3">
+            <div class="card height">
+                <div class="card-header card-header-primary">Detalhes do Pedido</div>
+                <div class="card-body">
+                    {% if model.getPresente() %}
+                        <strong>Presente:</strong> Sim<br>
+                    {% else %}
+                        <strong>Presente:</strong> Não<br>
+                    {% endif %}
+
+                    <strong>Data:</strong> {{ model.getData_Venda() }}<br>
+
+                    {% if model.getVenda_Status() %}
+                        <strong>Status:</strong> <a data-toggle="modal" data-target="#modalSituacao" style="text-decoration: underline; cursor: pointer;">{{ (model.getVenda_Status() | last).getStatus() }}</a>
+                    {% else %}
+                        <strong>Status:</strong> <a data-toggle="modal" data-target="#modalSituacao" style="text-decoration: underline; cursor: pointer;"><i class="fas fa-external-link-alt"></i></a>
+                    {% endif %}
+                    <br>
+
+                    {% if model.getPresente() %}
+                        <strong>Obs:</strong> {{ model.getObs() }}<br>
+                    {% else %}
+                        <strong>Obs:</strong> Nenhum<br>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-3 col-lg-3 float-sm-right">
+            <div class="card height">
+                <div class="card-header card-header-primary">Endereço de Entrega</div>
+                <div class="card-body">
+                    <a href="index.php?class=PessoaDetails&method=onDetail&id={{ model.getCliente().getId() }}" style="color: black;">
+                        <strong>{{ model.getCliente() }}:</strong><br>
+                    </a>
+                    {{ model.getCliente().getEndereco() }}<br>
+                    {{ model.getCliente().getBairro() }}<br>
+                    {{ model.getCliente().getCidade() }}<br>
+                    <strong>{{ model.getCliente().getTelefone() }}</strong><br>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card ">
+            <div class="card-header card-header-primary">
+                <h3 class="text-sm-center"><strong>Resumo da Venda</strong></h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th class="text-sm-left font-weight-bold">Nome do Produto</td>
+                                <th class="text-sm-center font-weight-bold">Preço</th>
+                                <th class="text-sm-center font-weight-bold">Quantidade</th>
+                                <th class="text-sm-right font-weight-bold">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in model.getItens() %}
+                                <tr>
+                                    <td>{{ item.getProduto() }}</td>
+                                    <td class="text-sm-center">R$ {{ item.getPreco_Unitario() | number_format(2, ',', '.') }}</td>
+                                    <td class="text-sm-center">{{ item.getQuantidade() }}</td>
+                                    <td class="text-sm-right">R$ {{ item.getPreco_Total() | number_format(2, ',', '.') }}</td>
+                                </tr>
+                            {% endfor %}
+                            <tr>
+                                <td class="highrow"></td>
+                                <td class="highrow"></td>
+                                <td class="highrow text-sm-center font-weight-bold"><strong>Subtotal</strong></td>
+                                <td class="highrow text-sm-right">R$ {{ model.getSubtotal() | number_format(2, ',', '.') }}</td>
+                            </tr>
+                            <tr>
+                                <td class="emptyrow"></td>
+                                <td class="emptyrow"></td>
+                                <td class="emptyrow text-sm-center font-weight-bold"><strong>Frete e Taxas</strong></td>
+                                
+                                {% if model.getAcrescimos() %}
+                                    <td class="emptyrow text-sm-right">R$ {{ model.getAcrescimos() | number_format(2, ',', '.') }}</td>
+                                {% else %}
+                                    <td class="emptyrow text-sm-right">---</td>
+                                {% endif %}
+
+                            </tr>
+                            <tr>
+                                <td class="emptyrow"></td>
+                                <td class="emptyrow"></td>
+                                <td class="emptyrow text-sm-center font-weight-bold"><strong>Descontos</strong></td>
+                                
+                                {% if model.getDesconto() %}
+                                    <td class="emptyrow text-sm-right">R$ {{ model.getDesconto() | number_format(2, ',', '.') }}</td>
+                                {% else %}
+                                    <td class="emptyrow text-sm-right">---</td>
+                                {% endif %}
+
+                            </tr>
+                            <tr>
+                                <td class="emptyrow">
+                                    <i>{{qrcode | raw}}</i>
+                                </td>
+                                <td class="emptyrow"></td>
+                                <td class="emptyrow text-sm-center font-weight-bold"><strong>Total</strong></td>
+                                <td class="emptyrow text-sm-right">R$ {{ model.getValor_Final() | number_format(2, ',', '.') }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="text-center noprintable">
+    <button type="button" onclick="history.go(-1);" class="btn btn-primary btn-round">Voltar</button>
+</div>
+
+<div class="modal fade" id="modalSituacao" tabindex="-1" role="dialog" aria-labelledby="modalSituacao"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title w-100 text-center" id="modalSituacao">Situação</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <label for="situacao" class="bmd-label-floating">Situação:</label>
+                <select name="situacao" id="situacao" class="form-control">
+                    {% for opcao in opcoes %}
+                        <option value="{{ opcao.getId() }}">{{ opcao.getStatus() }}</option>
+                    {% endfor %}
+                </select>
+
+                {% if model.getVenda_Status %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th class="text-sm-center font-weight-bold">Situação</td>
+                                    <th class="text-sm-center font-weight-bold">Data</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <h4 class="text-center mt-5">HISTÓRICO</h4>
+                                {% for situacao in model.getVenda_Status() %}
+                                    <tr>
+                                        <td class="text-sm-center">
+                                            <a onclick="onDeleteSituation('{{ situacao.getId() }}');">
+                                                <i class="fas fa-trash text-danger" style="cursor: pointer;"></i>
+                                            </a>
+                                        </td>
+                                        <td class="text-sm-center">{{ situacao.getStatus() }}</td>
+                                        <td class="text-sm-center">{{ situacao.getData_Hora() }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnSalvar" class="btn btn-primary" data-dismiss="modal">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $("#btnSalvar").click(function() {
+        var url = window.location.href;
+        var index = url.lastIndexOf('=');
+        var id_venda = url.substr(index + 1);
+
+        $.ajax({
+            url : '?class=VendaDetails&method=onAddSituation',
+            dataType : 'html',
+            type : 'POST',
+            data : {
+                "id_venda" : id_venda,
+                "id_status" : $("#situacao option:selected").val()
+            },
+            success : function(response) {
+                location.reload(); 
+            }
+        });
+    });
+
+    function onDeleteSituation(id) {
+        $.ajax({
+            url : '?class=VendaDetails&method=onDeleteSituation',
+            dataType : 'html',
+            type : 'POST',
+            data : {
+                'id_status' : id
+            },
+            success : function(response) {
+                location.reload(); 
+            }
+        });
+    }
+</script>
+
+<style>
+.height {
+    min-height: 200px;
+}
+
+.icon {
+    font-size: 47px;
+    color: #5CB85C;
+}
+
+.iconbig {
+    font-size: 77px;
+    color: #5CB85C;
+}
+
+.table > tbody > tr > .emptyrow {
+    border-top: none;
+}
+
+.table > thead > tr > .emptyrow {
+    border-bottom: none;
+}
+
+.table > tbody > tr > .highrow {
+    border-top: 3px solid;
+}
+</style>

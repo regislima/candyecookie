@@ -1,0 +1,15 @@
+{
+  "short_name": "Candy & Cookie",
+  "name": "Candy & Cookie",
+  "icons": [
+    {
+      "src": "App/Resources/Images/candy_icone.png",
+      "type": "image/png",
+      "sizes": "180x180"
+    }
+  ],
+  
+  "background_color": "#fff",
+  "display": "standalone",
+  "theme_color": "#FFFFFF"
+}

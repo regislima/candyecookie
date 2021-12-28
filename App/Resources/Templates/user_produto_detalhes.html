@@ -1,0 +1,299 @@
+<style>
+    .single_product {
+        padding-top: 66px;
+        margin-top: 60px;
+        padding: 17px
+    }
+
+    .product_name {
+        font-size: 20px;
+        font-weight: 400;
+        margin-top: 0px
+    }
+
+    .product_price {
+        display: inline-block;
+        font-size: 30px;
+        font-weight: 500;
+        margin-top: 9px;
+        clear: left
+    }
+
+    .singleline {
+        margin-top: 1rem;
+        margin-bottom: .40rem;
+        border: 0;
+        border-top: 1px solid rgba(0, 0, 0, .1)
+    }
+
+    .product_info {
+        color: #4d4d4d;
+        display: inline-block
+    }
+
+    .product_description {
+        padding-left: 0px
+    }
+
+    .image_selected {
+        display: -webkit-box;
+        display: -moz-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: calc(100% + 15px);
+        height: 525px;
+        -webkit-transform: translateX(-15px);
+        -moz-transform: translateX(-15px);
+        -ms-transform: translateX(-15px);
+        -o-transform: translateX(-15px);
+        transform: translateX(-15px);
+        border: solid 1px #e8e8e8;
+        box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        padding: 15px
+    }
+
+    .image_list li {
+        display: -webkit-box;
+        display: -moz-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 165px;
+        border: solid 1px #e8e8e8;
+        box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.1) !important;
+        margin-bottom: 15px;
+        cursor: pointer;
+        padding: 15px;
+        -webkit-transition: all 200ms ease;
+        -moz-transition: all 200ms ease;
+        -ms-transition: all 200ms ease;
+        -o-transition: all 200ms ease;
+        transition: all 200ms ease;
+        overflow: hidden
+    }
+
+    .row-underline {
+        content: "";
+        display: block;
+        border-bottom: 2px solid #3798db;
+        margin: 0px 0px;
+        margin-bottom: 20px;
+        margin-top: 15px
+    }
+
+    @import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700,800,900|Rubik:300,400,500,700,900');
+
+    * {
+        margin: 0;
+        padding: 0;
+        -webkit-font-smoothing: antialiased;
+        -webkit-text-shadow: rgba(0, 0, 0, .01) 0 0 1px;
+        text-shadow: rgba(0, 0, 0, .01) 0 0 1px
+    }
+
+    body {
+        font-family: 'Rubik', sans-serif;
+        font-size: 14px;
+        font-weight: 400;
+        background: #FFFFFF;
+        color: #000000
+    }
+
+    div {
+        display: block;
+        position: relative;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box
+    }
+
+    ul {
+        list-style: none;
+        margin-bottom: 0px
+    }
+
+    .image_list li {
+        display: -webkit-box;
+        display: -moz-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 165px;
+        border: solid 1px #e8e8e8;
+        box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.1);
+        margin-bottom: 15px;
+        cursor: pointer;
+        padding: 15px;
+        -webkit-transition: all 200ms ease;
+        -moz-transition: all 200ms ease;
+        -ms-transition: all 200ms ease;
+        -o-transition: all 200ms ease;
+        transition: all 200ms ease;
+        overflow: hidden
+    }
+
+    .image_list li:last-child {
+        margin-bottom: 0
+    }
+
+    .image_list li:hover {
+        box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.3)
+    }
+
+    .image_list li img {
+        max-width: 100%
+    }
+
+    .image_selected {
+        display: -webkit-box;
+        display: -moz-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: calc(100% + 15px);
+        height: 525px;
+        -webkit-transform: translateX(-15px);
+        -moz-transform: translateX(-15px);
+        -ms-transform: translateX(-15px);
+        -o-transform: translateX(-15px);
+        transform: translateX(-15px);
+        border: solid 1px #e8e8e8;
+        box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        padding: 15px
+    }
+
+    .image_selected img {
+        max-width: 100%
+    }
+</style>
+
+<div class="single_product">
+    <div class="container-fluid" style=" background-color: #fff; padding: 11px;">
+        <div class="row">
+            
+            {% if produto.getImagem() %}
+            <div class="col-lg-5">
+                <!--Fazer um for aqui-->
+                <div id="slider" class="carousel slide my-4" data-ride="carousel">
+                    <ol class="carousel-indicators">
+                      
+                        {% for key in produto.getImagem() | keys %}
+                            {% if key == 0 %}
+                                <li data-target="#slider" data-slide-to="{{ key }}" class="active"></li>
+                            {% else %}
+                                <li data-target="#slider" data-slide-to="{{ key }}"></li>
+                            {% endif %}
+                        {% endfor %}
+
+                    </ol>
+                    <div class="carousel-inner" role="listbox">
+
+                        {% for key, imagens in produto.getImagem() %}
+                            {% if key == 0 %}
+                                <div class="text-center carousel-item active">
+                                    <img class="img-fluid" src="App/Resources/Images/{{ imagens.getImagem() }}" alt="slide">
+                                </div>
+                            {% else %}
+                                <div class="text-center carousel-item">
+                                    <img class="img-fluid" src="App/Resources/Images/{{ imagens.getImagem() }}" alt="slide">
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+
+                    </div>
+                    <a class="carousel-control-prev" href="#slider" role="button" data-slide="prev">
+                        <i class="fas fa-chevron-left text-dark" aria-hidden="true"></i>
+                        <span class="sr-only">Anterior</span>
+                    </a>
+                    <a class="carousel-control-next" href="#slider" role="button" data-slide="next">
+                        <i class="fas fa-chevron-right text-dark" aria-hidden="true"></i>
+                        <span class="sr-only">Próximo</span>
+                    </a>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-lg-6">
+                <div class="image_selected"><img src="App/Resources/Images/produto_sem_imagem.png" alt=""></div>
+            </div>
+            {% endif %}
+
+            <div class="col-lg-6">
+                <div class="product_description">
+                    <div class="product_name">{{ produto.getNome() }}</div>
+                    <div>
+                        <span class="product_price">R$ {{ produto.getPreco_Venda() }}</span>
+                    </div>
+                    <hr class="singleline">
+                    <div>
+                        <span class="product_info">Estoque: {{ produto.getEstoque() }}<span><br>
+                        <span class="product_info">Medida: {{ produto.getMedida() }} {{ produto.getUnidade() }}<span><br>
+                        <span class="product_info">Tipo: {{ produto.getTipo() }}<span><br>
+                        <span class="product_info">Fabricante: {{ produto.getFabricante() }}<span><br>
+                        <span class="product_info">Descrição: {{ produto.getDescricao() }}<span><br>
+                        <span class="product_info">Obs: {{ produto.getObs() }}<span>
+                    </div>
+                    <hr class="singleline">
+                    <div>
+
+                        {% if produto.getEstoque() > 0 %}
+                            <button type="button" class="btn btn-lg btn-outline-success text-uppercase mb-1" onclick="onComprar('{{produto.getId()}}');">Comprar</button>
+                            <button type="button" class="btn btn-lg btn-outline-primary text-uppercase mb-1" onclick="onAddCarrinho('{{produto.getId()}}');">
+                                <i class="fas fa-cart-plus"></i>
+                                Add ao Carrinho
+                            </button>
+                        {% else %}
+                            <button type="button" class="btn btn-lg btn-outline-success text-uppercase mb-1" onclick="onComprar('{{produto.getId()}}');" disabled>Comprar</button>
+                            <button type="button" class="btn btn-lg btn-outline-primary text-uppercase mb-1" onclick="onAddCarrinho('{{produto.getId()}}');" disabled>
+                                <i class="fas fa-cart-plus"></i>
+                                Add ao Carrinho
+                            </button>
+                        {% endif %}
+    
+                    </div>
+                </div> 
+            </div>
+        </div>
+        <div class="row row-underline">
+            <div class="col-md-6"> <span class=" deal-text">Comentários</span> </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function onAddCarrinho(id) {
+        $.ajax({
+            url : 'index.php?class=LojaIndex&method=onAddCart&id=' + id,
+            dataType : 'html',
+            type : 'GET',
+            success : function(response) {
+                location.reload();
+            }
+        });
+    }
+
+    function onComprar(id) {
+        $.ajax({
+            url : 'index.php?class=LojaIndex&method=onAddCart&id=' + id,
+            dataType : 'html',
+            type : 'GET',
+            success : function(response) {
+                window.location.href = "index.php?class=Carrinho";
+            }
+        });
+    }
+</script>

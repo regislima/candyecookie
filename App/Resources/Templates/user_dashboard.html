@@ -1,0 +1,294 @@
+<style>
+    .collapsible-link::before {
+        content: '';
+        width: 14px;
+        height: 2px;
+        background: #333;
+        position: absolute;
+        top: calc(50% - 1px);
+        right: 1rem;
+        display: block;
+        transition: all 0.3s;
+    }
+
+    /* Vertical line */
+    .collapsible-link::after {
+        content: '';
+        width: 2px;
+        height: 14px;
+        background: #333;
+        position: absolute;
+        top: calc(50% - 7px);
+        right: calc(1rem + 6px);
+        display: block;
+        transition: all 0.3s;
+    }
+
+    .collapsible-link[aria-expanded='true']::after {
+        transform: rotate(90deg) translateX(-1px);
+    }
+
+    .collapsible-link[aria-expanded='true']::before {
+        transform: rotate(180deg);
+    }
+
+    .img {
+        width: 150px;
+        height: 150px;
+    }
+</style>
+
+
+
+<div style="margin-top: 100px;">
+    <h4 class="text-center">DASHBOARD</h4>
+    <div class="row">
+        <div class="col-lg-9 mx-auto">
+            <!-- Accordion -->
+            <div id="accordionExample" class="accordion shadow">
+
+                <!-- Perfil -->
+                <div class="card">
+                    <div id="headingOne" class="card-header bg-white shadow-sm border-0">
+                        <h6 class="mb-0 font-weight-bold">
+                            <a href="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne"
+                                class="d-block position-relative text-dark text-uppercase collapsible-link py-2 text-center">PERFIL
+                            </a>
+                        </h6>
+                    </div>
+                    <div id="collapseOne" aria-labelledby="headingOne" data-parent="#accordionExample" class="collapse">
+                        <div class="card-body">
+                            <p class="font-weight-light m-0">
+                                <div class="text-center mb-5">
+                                    {% if pessoa.getImagem() %}
+                                        <img class="img rounded-circle" src="App/Resources/Images/{{pessoa.getImagem()}}">
+                                    {% else %}
+                                        <img class="img rounded-circle" src="App/Resources/Images/user_no_image.png">
+                                    {% endif %}
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label><b>Nome:</b> {{pessoa.getNome()}}</label>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label><b>CPF:</b> {{pessoa.getCPF()}}</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label><b>Endereço:</b> {{pessoa.getEndereco()}}</label>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label><b>Bairro:</b> {{pessoa.getBairro()}}</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label><b>Telefone:</b> {{pessoa.getTelefone()}}</label>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label><b>Email:</b> {{pessoa.getEmail()}}</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label><b>Data de Nascimento:</b> {{pessoa.getNascimento()}}</label>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label><b>Cidade:</b> {{pessoa.getCidade().getNome()}}</label>
+                                    </div>
+                                </div>
+                                <hr class="mb-4">
+                                <a href="index.php?class=RegisterForm&method=onEdit&id={{pessoa.getId()}}&redirect=UserDashboard"
+                                    class="btn btn-primary" id="alterar">Editar</a>
+                                </p>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pedidos -->
+                <div class="card">
+                    <div id="headingTwo" class="card-header bg-white shadow-sm border-0">
+                        <h6 class="mb-0 font-weight-bold">
+                            <a href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo"
+                                class="d-block position-relative collapsed text-dark text-uppercase collapsible-link py-2 text-center">PEDIDOS
+                            </a>
+                        </h6>
+                    </div>
+                    <div id="collapseTwo" aria-labelledby="headingTwo" data-parent="#accordionExample" class="collapse">
+                        <div class="card-body">
+                            <p class="font-weight-light m-0">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-sm-center font-weight-bold">Detalhes</td>
+                                                <th class="text-sm-center font-weight-bold">Código</td>
+                                                <th class="text-sm-center font-weight-bold">Data</th>
+                                                <th class="text-sm-center font-weight-bold">Situação</th>
+                                                <th class="text-sm-center font-weight-bold">Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for pedido in pedidos %}
+                                                <tr>
+                                                    <td class="text-sm-center">
+                                                        <a href="index.php?class=PedidoDetalhes&method=onDetail&id={{ pedido.getId() }}">
+                                                            <i class="fas fa-info-circle"></i>
+                                                        </a>
+                                                    </td>
+                                                    <td class="text-sm-center">{{ pedido.getId() }}</td>
+                                                    <td class="text-sm-center">{{ pedido.getData_Venda() }}</td>
+                                                    <td class="text-sm-center">{{ (pedido.getVenda_Status() | last).getStatus() }}</td>
+                                                    <td class="text-sm-center">R$ {{ pedido.getValor_Final() }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contas -->
+                <div class="card">
+                    <div id="headingFour" class="card-header bg-white shadow-sm border-0">
+                        <h6 class="mb-0 font-weight-bold">
+                            <a href="#" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour"
+                                class="d-block position-relative collapsed text-dark text-uppercase collapsible-link py-2 text-center">CONTAS
+                            </a>
+                        </h6>
+                    </div>
+                    <div id="collapseFour" aria-labelledby="headingFour" data-parent="#accordionExample" class="collapse">
+                        <div class="card-body">
+                            <p class="font-weight-light m-0">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3 text-center">
+                                        <label><b>Créditos:</b> R$ {{ pessoa.getCredito() | number_format(2, ',', '.') }}</label>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label><b>Usado:</b> R$ {{ usados | number_format(2, ',', '.') }}</label>
+                                    </div>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-sm-center font-weight-bold">Código</td>
+                                                <th class="text-sm-center font-weight-bold">Venda</td>
+                                                <th class="text-sm-center font-weight-bold">Data de Emissão</th>
+                                                <th class="text-sm-center font-weight-bold">Data de Vencimento</th>
+                                                <th class="text-sm-center font-weight-bold">Valor</th>
+                                                <th class="text-sm-center font-weight-bold">Paga?</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for conta in contas %}
+                                                <tr>
+                                                    <td class="text-sm-center">{{ conta.getId() }}</td>
+                                                    <td class="text-sm-center">{{ conta.getId_Venda() }}</td>
+                                                    <td class="text-sm-center">{{ conta.getDt_Emissao() | date('d/m/Y') }}</td>
+                                                    <td class="text-sm-center">{{ conta.getDt_Vencimento | date('d/m/Y') }}</td>
+                                                    <td class="text-sm-center">R$ {{ conta.getValor() | number_format(2, ',', '.') }}</td>
+
+                                                    {% if conta.getPaga() == 'S' %}
+                                                        <td class="text-sm-center">Sim</td>
+                                                    {% else %}
+                                                        <td class="text-sm-center">Não</td>
+                                                    {% endif %}
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contato -->
+                <div class="card">
+                    <div id="headingThree" class="card-header bg-white shadow-sm border-0">
+                        <h6 class="mb-0 font-weight-bold">
+                            <a href="#" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree"
+                                class="d-block position-relative collapsed text-dark text-uppercase collapsible-link py-2 text-center">CONTATO
+                            </a>
+                        </h6>
+                    </div>
+                    <div id="collapseThree" aria-labelledby="headingThree" data-parent="#accordionExample" class="collapse">
+                        <div class="card-body">
+                            <p class="font-weight-light m-0">
+                                <div class="form-group">
+                                    <label for="assunto">Assunto</label>
+                                    <select name="assunto" id="assunto" class="form-control">
+                                        <option value="Elogio">Elogio</option>
+                                        <option value="Reclamação">Reclamação</option>
+                                        <option value="Sugestão">Sugestão</option>
+                                        <option value="Crédito">Crédito</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="mensagem">Mensagem</label>
+                                    <textarea class="form-control" id="mensagem" name="mensagem" placeholder="Escreva sua mensagem aqui..." rows="5"></textarea>
+                                </div>
+                                <div class="text-right">
+                                    <button onclick="onContact();" class="btn btn-primary" id="enviar_mensagem">Enviar</button>
+                                </div>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalSituacao" tabindex="-1" role="dialog" aria-labelledby="modalSituacao"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                {% if pedidos %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th class="text-sm-center font-weight-bold">Situação</td>
+                                    <th class="text-sm-center font-weight-bold">Data</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <h4 class="text-center mt-5">HISTÓRICO</h4>
+                                {% for pedido in pedidos %}
+                                    <tr>
+                                        <td class="text-sm-center">{{ situacao.getStatus() }}</td>
+                                        <td class="text-sm-center">{{ situacao.getData_Hora() }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function onContact() {
+        $.ajax({
+            url : '?class=UserDashboard&method=contact',
+            dataType : 'html',
+            type : 'POST',
+            data : {
+                'assunto' : $('#assunto option:selected').val(),
+                'mensagem' : $('#mensagem').val()
+            },
+            success : function(response) {
+                location.reload();
+            }
+        });
+    }
+</script>

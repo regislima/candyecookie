@@ -1,0 +1,270 @@
+<div class="col-sm-12 printable">
+    <div class="row">
+        <div class="col-sm-12 col-md-4 col-lg-4">
+            <div class="card height">
+                <div class="card-header card-header-primary">Detalhes da Cliente</div>
+                <div class="card-body">
+                    <a href="index.php?class=PessoaDetails&method=onDetail&id={{ cliente.getId() }}" style="color: black;">
+                        <strong>{{ cliente.getNome() }}:</strong><br>
+                    </a>
+                    {{ cliente.getEndereco() }}<br>
+                    {{ cliente.getBairro() }}<br>
+                    {{ cliente.getCidade() }}<br>
+                    <strong>{{ cliente.getTelefone() }}</strong><br>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-4 col-lg-4">
+            <div class="card height">
+                <div class="card-header card-header-primary">Detalhes do Crédito</div>
+                <div class="card-body">
+                    <strong>Total:</strong> R$ {{ cliente.getCredito() | number_format(2, ',', '.') }}<br>
+                    <strong>Gasto:</strong> R$ {{ debitos | number_format(2, ',', '.') }}<br>
+                    <strong>Alterar Crédito:</strong> <a data-toggle="modal" data-target="#modalCredito" style="text-decoration: underline; cursor: pointer;"><i class="fas fa-edit"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-4 col-lg-4">
+            <div class="card height">
+                <div class="card-header card-header-primary">Pesquisar</div>
+                <div class="card-body">
+                    <form action="?class=ContaCreditoDetails&method=onReload" method="post">
+                        <input type="hidden" name="id_cliente" value="{{ cliente.getId() }}">
+                        <div class="form-group">
+                            <label for="dt_emissao" class="bmd-label-static">Data de Emissão</label>
+                            <input type="date" name="dt_emissao" id="dt_emissao" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="dt_vencimento" class="bmd-label-static">Data de Vencimento</label>
+                            <input type="date" name="dt_vencimento" id="dt_vencimento" class="form-control">
+                        </div>
+                        <button class="btn btn-primary">Pesquisar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card ">
+            <div class="card-header card-header-primary">
+                <h3 class="text-sm-center"><strong>Parcelas Encontradas</strong></h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th class="text-sm-center font-weight-bold">Código</td>
+                                <th class="text-sm-center font-weight-bold">Venda</th>
+                                <th class="text-sm-center font-weight-bold">Data de Emissão</th>
+                                <th class="text-sm-center font-weight-bold">Data de Vencimento</th>
+                                <th class="text-sm-center font-weight-bold">Valor</th>
+                                <th class="text-sm-center font-weight-bold">Paga?</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for conta in contas %}
+                                <tr>
+                                    <td class="text-sm-center">
+                                        <a onclick="onEdit('{{ conta.getId() }}', '{{ conta.getDt_Vencimento() }}', '{{ conta.getPaga() }}');">
+                                            <i class="fas fa-edit" style="cursor: pointer;"></i>
+                                        </a>
+                                    </td>
+                                    <td class="text-sm-center">
+                                        <a onclick="onPrint('{{ conta.getId() }}');">
+                                            <i class="fas fa-print" style="cursor: pointer;"></i>
+                                        </a>
+                                    </td>
+                                    <td class="text-sm-center">{{ conta.getId() }}</td>
+                                    <td class="text-sm-center">{{ conta.getId_Venda() }}</td>
+                                    <td class="text-sm-center">{{ conta.getDt_Emissao() | date('d/m/Y') }}</td>
+                                    <td class="text-sm-center">{{ conta.getDt_Vencimento() | date('d/m/Y') }}</td>
+                                    <td class="text-sm-center"> RS {{ conta.getValor() | number_format(2, ',', '.') }}</td>
+
+                                    {% if conta.getPaga() == 'N' %}
+                                        <td class="text-sm-center">Não</td>
+                                    {% else %}
+                                        <td class="text-sm-center">Sim</td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="text-center noprintable">
+    <button type="button" onclick="history.go(-1);" class="btn btn-primary btn-round">Voltar</button>
+</div>
+
+<div class="modal fade" id="modalCredito" tabindex="-1" role="dialog" aria-labelledby="modalCredito"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title w-100 text-center" id="modalCredito">Crédito</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="creditoAtual" class="bmd-label-floating">Credito Atual:</label>
+                    {% if cliente.getCredito() %}
+                        <input type="text" name="creditoAtual" id="creditoAtual" value="{{ cliente.getCredito() }}" class="form-control" disabled>
+                    {% else %}
+                        <input type="text" name="creditoAtual" id="creditoAtual" value="0000" class="form-control" disabled>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="creditoNovo" class="bmd-label-floating">Credito Novo:</label>
+                    <input type="text" name="creditoNovo" id="creditoNovo" class="form-control">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnSalvarCredito" class="btn btn-primary" data-dismiss="modal">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-labelledby="modalEdit"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title w-100 text-center" id="modalEdit">Parcela</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="idParcela" name="idParcela">
+                <div class="form-group">
+                    <label for="dataVencimentoAtual">Data de Vencimento Atual:</label>
+                    <input type="date" name="dataVencimentoAtual" id="dataVencimentoAtual" class="form-control" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="dataVencimentoNovo">Nova Data de Vencimento:</label>
+                    <input type="date" name="dataVencimentoNovo" id="dataVencimentoNovo" class="form-control">
+                </div>
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="checkbox" id="paga" name="paga"> Paga?
+                        <span class="form-check-sign">
+                            <span class="check"></span>
+                        </span>
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnEditarParcela" class="btn btn-primary" data-dismiss="modal">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $("#creditoAtual").mask("000.000,00", {reverse: true});
+        $("#creditoNovo").mask("000.000,00", {reverse: true});
+    });
+
+    $("#btnPesquisar").click(function() {
+        $.ajax({
+            url : '?class=ContaCreditoDetails&method=onReload',
+            dataType : 'html',
+            type : 'POST',
+            data : {
+                "id_cliente" : '{{ cliente.getId() }}',
+                "dt_emissao" : $("#dt_emissao").val(),
+                "dt_vencimento" : $("#dt_vencimento").val()
+            },
+            success : function(response) {
+                location.reload(); 
+            }
+        });
+    });
+
+    $("#btnSalvarCredito").click(function() {
+        var debitos = parseInt('{{ debitos }}');
+        if ($("#creditoNovo").val() < debitos) {
+            alert('Valor do novo crédito não pode ser inferior aos débitos.');
+        } else {
+            $.ajax({
+                url : '?class=ContaCreditoDetails&method=addCredito',
+                dataType : 'html',
+                type : 'POST',
+                data : {
+                    "id_cliente" : '{{ cliente.getId() }}',
+                    "credito" : $("#creditoNovo").val()
+                },
+                success : function(response) {
+                    location.reload(); 
+                }
+            });
+        }
+    });
+
+    $("#btnEditarParcela").click(function() {
+        $.ajax({
+            url : '?class=ContaCreditoDetails&method=onEdit',
+            dataType : 'html',
+            type : 'POST',
+            data : {
+                'id' : $('#idParcela').val(),
+                'dataVencimentoNovo' : $('#dataVencimentoNovo').val(),
+                'paga' : $('#paga').is(':checked')
+            },
+            success : function(response) {
+                location.reload(); 
+            }
+        });
+    });
+
+    function onEdit(id, dataVencimentoAtual, paga) {
+        $('#modalEdit').modal('show');
+        $('#idParcela').val(id);
+        $('#dataVencimentoAtual').val(dataVencimentoAtual);
+        if (paga == 'S') {
+            $('#paga').attr('checked', true);
+        } else {
+            $('#paga').attr('checked', false);
+        }
+    }
+</script>
+
+<style>
+.height {
+    min-height: 200px;
+}
+
+.icon {
+    font-size: 47px;
+    color: #5CB85C;
+}
+
+.iconbig {
+    font-size: 77px;
+    color: #5CB85C;
+}
+
+.table > tbody > tr > .emptyrow {
+    border-top: none;
+}
+
+.table > thead > tr > .emptyrow {
+    border-bottom: none;
+}
+
+.table > tbody > tr > .highrow {
+    border-top: 3px solid;
+}
+</style>

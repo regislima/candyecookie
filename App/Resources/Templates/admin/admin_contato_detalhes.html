@@ -1,0 +1,75 @@
+{% if contato %}
+    <div class="col-sm-12">
+        <div class="card height">
+            <div class="card-header card-header-primary">Detalhes do Cliente</div>
+            <div class="card-body">
+                <strong>Código:</strong> {{ contato.getCliente().getId() }}<br>
+                <strong>Nome:</strong> {{ contato.getCliente().getNome() }}<br>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-12">
+        <div class="card height">
+            <div class="card-header card-header-primary">Detalhes da Mensagem</div>
+            <div class="card-body">
+                <strong>Assunto:</strong> {{ contato.getAssunto() }}<br>
+                <strong>Mensagem:</strong> {{ contato.getMensagem() }}<br>
+                {% if contato.getLida() == 'N' %}
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" id="lida" name="lida" disabled>
+                            Lida
+                            <span class="form-check-sign">
+                                <span class="check"></span>
+                            </span>
+                        </label>
+                    </div>
+                {% else %}
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="checkbox" id="lida" name="lida" checked disabled>
+                        Lida
+                        <span class="form-check-sign">
+                            <span class="check"></span>
+                        </span>
+                    </label>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+<div class="card">
+    <h4 class="card-header card-header-primary">Contato</h4>
+    <div class="card-body">
+        <form name="form_pessoas" enctype="multipart/form-data" method="post">
+
+            {% if contato is null %}
+                <div class="form-group bmd-form-group">
+                    <label class="bmd-label-floating">Para</label>
+                    <input name="email" type="email" class="form-control" required="">
+                </div>
+                <div class="form-group bmd-form-group">
+                    <label class="bmd-label-floating">Assunto</label>
+                    <input name="assunto" type="text" class="form-control" required="">
+                </div>
+            {% else %}
+                <input name="id" type="hidden" value="{{ contato.getId() }}">
+            {% endif %}
+
+            <div class="form-group bmd-form-group">
+                <label class="bmd-label-floating">Mensagem</label>
+                <textarea name="mensagem" rows="3" class="form-control" required=""></textarea>
+            </div>
+            <div class="">
+                <label class="bmd-label-floating">Anexo</label>
+                <input name="anexo" type="file" class="form-control-file">
+            </div>
+        </form>
+    </div>
+    <div class="card-footer">
+        <button name="form_pessoas_enviar" class="btn btn-primary" onclick="document.form_pessoas.action='?class=ContatoForm&amp;method=onSend'; document.form_pessoas.submit();">Enviar</button>
+    </div>
+</div>

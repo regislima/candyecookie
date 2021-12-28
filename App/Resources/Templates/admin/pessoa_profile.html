@@ -1,0 +1,110 @@
+<!-- Detalhes Pessoa -->
+<div class="col-sm-6 mx-auto">
+    <div class="card card-profile">
+        <div class="card-avatar">
+            <a href="" data-toggle="modal" data-target="#modalImagem">
+                {% if model.getImagem() %}
+                    <img class="img" src="App/Resources/Images/{{model.getImagem()}}">
+                {% else %}
+                    <img class="img" src="App/Resources/Images/user_no_image.png">
+                {% endif %}
+            </a>
+        </div>
+        <div class="card-body">
+            <div class="card-header card-header-primary">
+                <h2>{{model.getNome()}}</h2>
+                <h5>{{model.getGrupo().getNome()}}</h5>
+            </div>
+            <p class="card-description">
+                <p>
+                    <div class="row">
+                        <div class="col text-right">
+                            <h5>Código</h5>
+                        </div>
+                        <div class="col text-left">
+                            <h5>{{model.getId()}}</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col text-right">
+                            <h5>CPF</h>
+                        </div>
+                        <div class="col text-left">
+                            <h5>{{model.getCPF()}}</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col text-right">
+                            <h5>Endereço</h5>
+                        </div>
+                        <div class="col text-left">
+                            <h5>{{model.getEndereco()}}</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col text-right">
+                            <h5>Bairro</h5>
+                        </div>
+                        <div class="col text-left">
+                            <h5>{{model.getBairro()}}</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col text-right">
+                            <h5>Data de Nascimento</h5>
+                        </div>
+                        <div class="col text-left">
+                            <h5>{{model.getNascimento()}}</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col text-right">
+                            <h5>Telefone</h5>
+                        </div>
+                        <div class="col text-left">
+                            <h5>{{model.getTelefone()}}</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col text-right">
+                            <h5>Email</h5>
+                        </div>
+                        <div class="col text-left">
+                            <h5>{{model.getEmail()}}</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col text-right">
+                            <h5>Cidade</h5>
+                        </div>
+                        <div class="col text-left">
+                            <h5>{{model.getCidade().getNome()}}</h5>
+                        </div>
+                    </div>
+                </p>
+            </p>
+            <button type="button" onclick="history.go(-1);" class="btn btn-primary btn-round">Voltar</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalImagem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">{{model.getImagem()}}</h5>
+            
+        </div>
+        <div class="modal-body text-center">
+            {% if model.getImagem() %}
+                <img class="img" style="max-height: 400px; max-width: 400px;" src="App/Resources/Images/{{model.getImagem()}}">
+            {% else %}
+                <img class="img" style="max-height: 400px; max-width: 400px;" src="App/Resources/Images/user_no_image.png">
+            {% endif %}
+        </div>
+        <div class="modal-footer text-center">
+            <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>

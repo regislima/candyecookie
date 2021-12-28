@@ -1,0 +1,392 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="card card-stats">
+                <div class="card-header card-header-warning card-header-icon">
+                    <div class="card-icon">
+                        <i class="material-icons">account_balance</i>
+                    </div>
+                    <p class="card-category">Lucro no Ano</p>
+                    {% if lucro_ano > 0 %}
+                        <h3 class="card-title">R$ {{ lucro_ano | number_format(2, ',', '.') }}</h3>
+                    {% else %}
+                        <h3 class="card-title text-danger">R$ {{ lucro_ano | number_format(2, ',', '.') }}</h3>
+                    {% endif %}
+                </div>
+                <div class="card-footer">
+                    <div class="stats">
+                        <i class="material-icons text-info">info</i>
+                        <a href="?class=VendasFormList">Mais detalhes...</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="card card-stats">
+                <div class="card-header card-header-success card-header-icon">
+                    <div class="card-icon">
+                        <i class="material-icons">people</i>
+                    </div>
+                    <p class="card-category">Clientes Cadastrados</p>
+                    <h3 class="card-title">{{ total_clientes }}</h3>
+                </div>
+                <div class="card-footer">
+                    <div class="stats">
+                        <i class="material-icons text-info">info</i>
+                        <a href="?class=PessoasFormList">Mais detalhes...</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="card card-stats">
+                <div class="card-header card-header-danger card-header-icon">
+                    <div class="card-icon">
+                        <i class="material-icons">widgets</i>
+                    </div>
+                    <p class="card-category">Produtos Cadastrados</p>
+                    <h3 class="card-title">{{ total_produtos }}</h3>
+                </div>
+                <div class="card-footer">
+                    <div class="stats">
+                        <i class="material-icons text-info">info</i>
+                        <a href="?class=ProdutosFormList">Mais detalhes...</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="card card-stats">
+                <div class="card-header card-header-info card-header-icon">
+                    <div class="card-icon">
+                        <i class="fas fa-hand-holding-usd"></i>
+                    </div>
+                    <p class="card-category">Contas a Receber</p>
+                    {% if total_receber > 0 %}
+                        <h3 class="card-title">R$ {{ total_receber | number_format(2, ',', '.') }}</h3>
+                    {% else %}
+                        <h3 class="card-title">R$ 0,00</h3>
+                    {% endif %}
+                </div>
+                <div class="card-footer">
+                    <div class="stats">
+                        <i class="material-icons text-info">info</i>
+                        <a href="?class=ContaCreditoFormList">Mais detalhes...</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Gráficos-->
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card card-chart">
+                <div class="card-header">
+                    <canvas id="pie-chart" height="335"></canvas>
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">Vendas em cada mês do ano de {{ ano }}</h4>
+                    <p class="card-category">Valores em reais.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card card-chart">
+                <div class="card-header">
+                    <canvas id="barChartVendasMes"></canvas>
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">Receita e despesa por mês do ano de {{ ano }}</h4>
+                    <p class="card-category">Valores em reais.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card card-chart">
+                <div class="card-header">
+                    <canvas id="lineChartLucroMes"></canvas>
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">Lucro por mês do ano de {{ ano }}</h4>
+                    <p class="card-category">Valores em reais.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Fim Gráficos-->
+
+    <div class="row">
+        <div class="col-lg-6 col-md-12">
+            <div class="card">
+                <div class="card-header card-header-tabs card-header-primary">
+                    <div class="nav-tabs-navigation">
+                        <div class="nav-tabs-wrapper">
+                            <span class="nav-tabs-title">Produto:</span>
+                            <ul class="nav nav-tabs" data-tabs="tabs">
+                                <li class="nav-item">
+                                    <a class="nav-link active" href="#vendidos" data-toggle="tab">
+                                        <i class="fas fa-chart-line"></i> Mais Vendidos
+                                        <div class="ripple-container"></div>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#estoque" data-toggle="tab">
+                                        <i class="fas fa-sort-amount-down"></i> Pouco Estoque
+                                        <div class="ripple-container"></div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="vendidos">
+                            <table class="table">
+                                <tbody>
+                                    {% for produto in top_produtos %}
+                                    <tr>
+                                        <td>{{ produto.nome }}</td>
+                                        <td>{{ produto.total }}</td> 
+                                        <td class="td-actions text-right">
+                                            <button type="button" rel="tooltip" class="btn btn-primary btn-link btn-sm" data-original-title="Detalhes" onclick="verDetalhesProduto('{{ produto.id_produto }}');">
+                                                <i class="fas fa-info"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% else %}
+                                        <h4>Nenhuma venda encontrada.<h4>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="tab-pane" id="estoque">
+                            <table class="table">
+                                <tbody>
+                                    {% for produto in estoque %}
+                                    <tr>
+                                        <td>{{ produto.getNome() }}</td>
+                                        <td class="text-danger">{{ produto.getEstoque() }}</td> 
+                                        <td class="text-right">
+                                            <button type="button" rel="tooltip" class="btn btn-primary btn-link btn-sm" data-original-title="Detalhes" onclick="verDetalhesProduto('{{ produto.getId() }}');">
+                                                <i class="fas fa-info"></i>
+                                            </button>
+                                            <button type="button" rel="tooltip" class="btn btn-primary btn-link btn-sm" data-original-title="Adicionar" onclick="editProduto('{{ produto.getId() }}');">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% else %}
+                                        <h4>Nenhum produto com estoque acabando.<h4>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 col-md-12">
+            <div class="card">
+                <div class="card-header card-header-tabs card-header-primary">
+                    <div class="nav-tabs-navigation">
+                        <div class="nav-tabs-wrapper">
+                            <span class="nav-tabs-title">Cliente:</span>
+                            <ul class="nav nav-tabs" data-tabs="tabs">
+                                <li class="nav-item">
+                                    <a class="nav-link active" href="#devedores" data-toggle="tab">
+                                        <i class="fab fa-creative-commons-nc"></i> Maiores Devedores
+                                        <div class="ripple-container"></div>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#contas_vencidas" data-toggle="tab">
+                                        <i class="fas fa-calendar-times"></i> Contas Vencidas
+                                        <div class="ripple-container"></div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="devedores">
+                            <table class="table">
+                                <tbody>
+                                    {% for devedor in devedores %}
+                                    <tr>
+                                        <td>{{ devedor.nome }}</td>
+                                        <td>{{ devedor.total | number_format(2, ',', '.') }}</td> 
+                                        <td class="td-actions text-right">
+                                            <button type="button" rel="tooltip" class="btn btn-primary btn-link btn-sm" data-original-title="Detalhes" onclick="verDetalhesCliente('{{ devedor.id_cliente }}');">
+                                                <i class="fas fa-info"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% else %}
+                                        <h4>Ninguém devendo nada.<h4>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="tab-pane" id="contas_vencidas">
+                            <table class="table">
+                                <tbody>
+                                    {% for conta in contas_vencidas %}
+                                    <tr>
+                                        <td>{{ conta.getCliente() }}</td>
+                                        <td class="text-danger">{{ conta.getDt_Vencimento() }}</td>
+                                        <td class="text-danger">{{ conta.getValor() | number_format(2, ',', '.') }}</td> 
+                                        <td class="text-right">
+                                            <button type="button" rel="tooltip" class="btn btn-primary btn-link btn-sm" data-original-title="Detalhes" onclick="verDetalhesConta('{{ produto.getId_Cliente() }}');">
+                                                <i class="fas fa-info"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% else %}
+                                        <h4>tudo normal por aqui.<h4>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    // Gráfico pizza usando Chart.js
+    new Chart($("#pie-chart"), {
+        type: 'pie',
+        data: {
+            labels: {{ labels | raw }},
+            datasets: [{
+                backgroundColor: [
+                    'rgba(220,57,18, 0.5)','rgba(255,153,0, 0.5)','rgba(16,150,24, 0.5)',
+                    'rgba(153,0,153,0.5)','rgba(59,62,172,0.5)','rgba(0,153,198,0.5)',
+                    'rgba(221,68,119,0.5)','rgba(102,170,0,0.5)','rgba(184,46,46,0.5)',
+                    'rgba(49,99,149,0.5)', 'rgba(153,68,153,0.5)','rgba(34,170,153,0.5)'
+                ],
+                data: {{ data_vendas | raw }}
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            legend: {
+                display: false
+            }
+        }
+    });
+
+    // Gráfico com barras com Chart.js
+    new Chart($('#barChartVendasMes'), {
+        type: 'bar',
+        data: {
+            labels: {{ labels | raw }},
+            datasets: [{
+                label: 'R$',
+                data: {{ data_vendas | raw }},
+                backgroundColor: [
+                    'rgba(220, 57, 18, 0.5)','rgba(255, 153, 0, 0.5)','rgba(16, 150, 24, 0.5)',
+                    'rgba(153, 0, 153, 0.5)','rgba(59, 62,172, 0.5)','rgba(0, 153, 198, 0.5)',
+                    'rgba(221, 68, 119, 0.5)','rgba(102, 170, 0, 0.5)','rgba(184, 46, 46, 0.5)',
+                    'rgba(49, 99, 149, 0.5)', 'rgba(153, 68, 153, 0.5)','rgba(34, 170, 153, 0.5)'
+                ],
+                borderColor: [
+                    'rgba(220, 57, 18, 0.5)','rgba(255, 153, 0, 0.5)','rgba(16, 150, 24, 0.5)',
+                    'rgba(153, 0, 153, 0.5)','rgba(59, 62, 172, 0.5)','rgba(0, 153, 198, 0.5)',
+                    'rgba(221, 68, 119, 0.5)','rgba(102, 170, 0, 0.5)','rgba(184, 46, 46, 0.5)',
+                    'rgba(49, 99, 149, 0.5)', 'rgba(153, 68, 153, 0.5)','rgba(34, 170, 153, 0.5)'
+                ],
+                borderWidth: 1
+            }, {
+                label: 'R$',
+                data: {{ data_despesas | raw }},
+                backgroundColor: [
+                    'rgba(139, 0, 0, 0.5)', 'rgba(139, 0, 0, 0.5)','rgba(139, 0, 0, 0.5)',
+                    'rgba(139, 0, 0, 0.5)','rgba(139, 0, 0, 0.5)','rgba(139, 0, 0, 0.5)',
+                    'rgba(139, 0, 0, 0.5)','rgba(139, 0, 0, 0.5)','rgba(139, 0, 0, 0.5)',
+                    'rgba(139, 0, 0, 0.5)','rgba(139, 0, 0, 0.5)','rgba(139, 0, 0, 0.5)'
+                ],
+                borderColor: [
+                    'rgba(139, 0, 0, 0.5)', 'rgba(139, 0, 0, 0.5)','rgba(139, 0, 0, 0.5)',
+                    'rgba(139, 0, 0, 0.5)','rgba(139, 0, 0, 0.5)','rgba(139, 0, 0, 0.5)',
+                    'rgba(139, 0, 0, 0.5)','rgba(139, 0, 0, 0.5)','rgba(139, 0, 0, 0.5)',
+                    'rgba(139, 0, 0, 0.5)','rgba(139, 0, 0, 0.5)','rgba(139, 0, 0, 0.5)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            },
+            
+            legend: {
+                display: false
+            }
+        }
+    });
+
+    // Gráfico em linha com Chart.js
+    new Chart($('#lineChartLucroMes'), {
+        type: 'line',
+        data: {
+            labels: {{ labels | raw }},
+            datasets: [{
+                label: 'R$',
+                fill: false,
+                data: {{ lucro_por_mes | raw }},
+                backgroundColor: [
+                    'rgba(0, 0, 0, 1)', 'rgba(0, 0, 0, 1)', 'rgba(0, 0, 0, 1)',
+                    'rgba(0, 0, 0, 1)', 'rgba(0, 0, 0, 1)', 'rgba(0, 0, 0, 1)',
+                    'rgba(0, 0, 0, 1)', 'rgba(0, 0, 0, 1)', 'rgba(0, 0, 0, 1)',
+                    'rgba(0, 0, 0, 1)', 'rgba(0, 0, 0, 1)', 'rgba(0, 0, 0, 1)'
+                ],
+
+                borderColor: ['rgba(0, 0, 139, .5)'],
+                borderWidth: 1
+            }]
+        },
+        
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            },
+            
+            legend: {
+                display: false
+            }
+        }
+    });
+
+    function verDetalhesProduto(id) {
+        location.href = '?class=ProdutoDetails&method=onDetail&id=' + id;
+    }
+
+    function editProduto(id) {
+        location.href = '?class=ProdutosForm&method=onEdit&id=' + id;
+    }
+
+    function verDetalhesCliente(id) {
+        location.href = '?class=PessoaDetails&method=onDetail&id=' + id;
+    }
+
+    function verDetalhesConta(id) {
+        location.href = '?class=ContaCreditoDetails&method=onReload&id_cliente=' + id;
+    }
+</script>

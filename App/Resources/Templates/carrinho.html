@@ -1,0 +1,166 @@
+<div class="row">
+    <div class="col-lg-12 p-5 bg-white rounded shadow-sm mb-5">
+
+        {% if produtos %}
+            <div class="row">
+                <div class="col-lg-9">
+                
+                    <!-- Tabela do Carrinho -->
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="border-0 text-left">
+                                        <div class="p-2 px-3 text-uppercase">Imagem</div>
+                                    </th>
+                                    <th scope="col" class="border-0">
+                                        <div class="p-2 px-3 text-uppercase text-left">Produto</div>
+                                    </th>
+                                    <th scope="col" class="border-0">
+                                        <div class="py-2 text-uppercase text-left">Preço</div>
+                                    </th>
+                                    <th scope="col" class="border-0">
+                                        <div class="py-2 text-uppercase text-center">Quantidade</div>
+                                    </th>
+                                    <th scope="col" class="border-0">
+                                        <div class="py-2 text-uppercase text-center">Remover</div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for produto in produtos %}
+                                    <tr>
+                                        <td scope="row" class="border-0">
+                                            <div class="p-2">
+                                                {% if produto.imagem %}
+                                                    <img src="App/Resources/Images/{{produto.imagem}}" alt="Imagem do produto" width="70" class="img-fluid rounded shadow-sm">
+                                                {% else %}
+                                                    <img src="App/Resources/Images/produto_sem_imagem.png" alt="Imagem do produto" width="70" class="img-fluid rounded shadow-sm">
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                        <td scope="row" class="border-0">
+                                            <div class="p-2">
+                                                <div class="d-inline-block align-middle">
+                                                    <h6 class="mb-0">
+                                                        <a href="index.php?class=ProdutoDetalhes&produto_id={{produto.id}}" class="text-dark d-inline-block align-middle">{{produto.nome}}</a>
+                                                    </h6>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="border-0 align-middle">
+                                            <h6>{{produto.preco_venda}}</h6>
+                                        </td>
+                                        <td class="border-0 align-middle">
+                                            <select class="form-control" id="quantidade_{{produto.id}}" onchange="onAlteraQuantidade('{{produto.id}}');">
+                                                {% for i in 1..produto.estoque %}
+                                                    {% if produto.quantidade == i %}
+                                                        <option value="{{i}}" selected>{{i}}</option>
+                                                    {% else %}
+                                                        <option value="{{i}}">{{i}}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                        </td>
+                                        <td class="border-0 align-middle text-center">
+                                            <a type="button" name="remove" id="remove" class="text-dark" onclick="onRemoveCarrinho('{{produto.id}}');">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- End -->
+
+                    <div class="py-3 text-uppercase font-weight-bold">Desconto (R$)</div>
+                    <div>
+                        <div class="input-group">
+                          <input type="text" id="desconto" name="desconto" class="form-control" placeholder="Insira o desconto aqui" value="{{ valores.desconto }}">
+                          <div>
+                            <button id="btnDesconto" onclick="onAplicaDesconto();" type="button" class="btn btn-dark"><i class="fa fa-gift mr-2"></i>Aplicar desconto</button>
+                          </div>
+                        </div>
+                      </div>
+                </div>
+
+                <!--Resumo da Compra-->
+                <div class="col-lg-3 bg-white rounded shadow-sm">
+                    <div class=" rounded-pill px-4 py-3 text-uppercase font-weight-bold">Resumo</div>
+                    <div class="p-4">
+                        <p class="font-italic mb-4">Frete e taxas adicionais serão calculados de acordo com o valor gasto.</p>
+                        <ul class="list-unstyled mb-4">
+                            <li class="d-flex justify-content-between py-3 border-bottom">
+                                <strong class="text-muted">Subtotal</strong>
+                                <strong>R$ {{ valores.subtotal | number_format(2, ',', '.') }}</strong>
+                            </li>
+                            <li class="d-flex justify-content-between py-3 border-bottom">
+                                <strong class="text-muted">Frete</strong>
+                                <strong>R$ {{ valores.frete | number_format(2, ',', '.') }}</strong>
+                            </li>
+                            <li class="d-flex justify-content-between py-3 border-bottom">
+                                <strong class="text-muted">Desconto</strong>
+                                <strong>R$ {{ valores.desconto | number_format(2, ',', '.') }}</strong></li>
+                            <li class="d-flex justify-content-between py-3 border-bottom">
+                                <strong class="text-muted">Total</strong>
+                                <h5 class="font-weight-bold">R$ {{ valores.total | number_format(2, ',', '.') }}</h5>
+                            </li>
+                        </ul>
+                        <a href="index.php?class=LoginForm" class="btn btn-success rounded-pill py-2 btn-block">Pagamento</a>
+                        <a href="index.php" class="btn btn-primary rounded-pill py-2 btn-block">Continuar comprando</a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="alert alert-info" role="alert">
+                Seu carrinho está vazio.
+                <a href="index.php">escolha um de nossos produtos aqui.</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    $('#desconto').mask("000.000,00", {reverse: true});
+
+    function onRemoveCarrinho(id) {
+        $.ajax({
+            url : 'index.php?class=Carrinho&method=onDelete&id=' + id,
+            dataType : 'html',
+            type : 'GET',
+            success : function(response) {
+                location.reload();
+            }
+        });
+    }
+
+    function onAlteraQuantidade(id) {
+        $.ajax({
+            url : 'index.php?class=Carrinho&method=calculaTotal',
+            dataType : 'html',
+            type : 'POST',
+            data : {
+                'id' : id,
+                'qtd' : $('#quantidade_' + id).val()
+            },
+            success : function(response) {
+                location.reload();
+            }
+        });
+    }
+
+    function onAplicaDesconto() {
+        $.ajax({
+            url : 'index.php?class=Carrinho&method=calculaTotal',
+            dataType : 'html',
+            type : 'POST',
+            data : {
+                'desc' : $('#desconto').val()
+            },
+            success : function(response) {
+                location.reload();
+            }
+        });
+    }
+</script>
